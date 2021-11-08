@@ -14,41 +14,44 @@ def reverseList[A](list: List[A]): List[A] ={
 }
 
 
-//
-def containsFrase(inputString: String, frase: String): Boolean={
+def containsPhrase(inputString: String, frase: String): Boolean={
   if frase.isBlank then true
   else if inputString.isBlank then false
   else if inputString.head == frase.head then
-    containsFrase(inputString.tail, frase.tail)
-  else containsFrase(inputString.tail, frase)
+    containsPhrase(inputString.tail, frase.tail)
+  else containsPhrase(inputString.tail, frase)
 }
 
-def containsFrases(inputString: String, frases: List[String]): Boolean={
-  if frases == Nil then false
-  else containsFrase(inputString, frases.head) || containsFrases(inputString, frases.tail)
+def containsPhrases(inputString: String, phrases: List[String]): Boolean={
+  if phrases == Nil then false
+  else if phrases.head.isBlank then false
+  else containsPhrase(inputString, phrases.head) || containsPhrases(inputString, phrases.tail)
 }
+//complexity
+//O(n^4), where n is max(functions below V )
+// list.length * frases.length * list[number].length * frases[number].length
 
-def find(list: List[String], frases: List[String]): List[String] ={
+def find(list: List[String], phrases: List[String]): List[String] ={
   list match
-    case h::t => if containsFrases(h, frases) then h :: find(t, frases)
-                          else find(t, frases)
+    case h::t => if containsPhrases(h, phrases) then h :: find(t, phrases)
+                          else find(t, phrases)
     case Nil => Nil
 }
 
-def findTail(list: List[String], frases: List[String]): List[String]= {
+def findTail(list: List[String], phrases: List[String]): List[String]= {
   @tailrec
-  def iterlist(list: List[String], frases: List[String], result: List[String]): List[String]={
+  def iterlist(list: List[String], phrases: List[String], result: List[String]): List[String]={
     list match
-      case h::t => if containsFrases(h, frases) then iterlist(t, frases, h :: result)
-        else iterlist(t, frases, result)
+      case h::t => if containsPhrases(h, phrases) then iterlist(t, phrases, h :: result)
+        else iterlist(t, phrases, result)
       case Nil => result
   }
-  reverseList(iterlist(list, frases, List()))
+  reverseList(iterlist(list, phrases, List()))
 }
 
 find(List("index0169","iindex0168202","iindex0168211","iindex0168210","iindex0169222","index0169224"), List("index0168"))
 findTail(List("index0169","iindex0168202","iindex0168211","iindex0168210","iindex0169222","index0169224"), List("index0168"))
-
+find(List("abc","def"),List(""))
 
 
 
